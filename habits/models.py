@@ -1,14 +1,16 @@
-from django.db import models
 from datetime import timedelta
-from config.settings import AUTH_USER_MODEL
 
+from django.db import models
+
+from config.settings import AUTH_USER_MODEL
 from users.models import User
+
 
 class Habit(models.Model):
     name = models.CharField(
         max_length=50,
         verbose_name="Название привычки",
-        help_text="Укажите название своей привычки"
+        help_text="Укажите название своей привычки",
     )
     owner = models.ForeignKey(
         AUTH_USER_MODEL,
@@ -22,8 +24,8 @@ class Habit(models.Model):
         max_length=100,
         verbose_name="Место",
         help_text="Укажите место, где выполянется действие",
-        blank = True,
-        null = True,
+        blank=True,
+        null=True,
     )
     time = models.TimeField(
         default="00:00",
@@ -36,8 +38,8 @@ class Habit(models.Model):
         max_length=100,
         verbose_name="Действие",
         help_text="Укажите действие",
-        blank = True,
-        null = True,
+        blank=True,
+        null=True,
     )
     is_pleasant = models.BooleanField(
         default=False,
@@ -47,7 +49,7 @@ class Habit(models.Model):
         null=True,
     )
     related_habit = models.ForeignKey(
-        'Habit',
+        "Habit",
         on_delete=models.SET_NULL,
         related_name="habit",
         verbose_name="Связанная привычка",
@@ -59,7 +61,7 @@ class Habit(models.Model):
         verbose_name="Периодичность",
         help_text="Укажите, сколько раз в неделю будет выполняться привычка",
         blank=True,
-        null=True
+        null=True,
     )
     reward = models.CharField(
         max_length=250,
@@ -79,3 +81,10 @@ class Habit(models.Model):
         blank=True,
         null=True,
     )
+
+    def __str___(self):
+        return f"Я буду {self.acrion} в {self.time} в {self.place}."
+
+    class Meta:
+        verbose_name = "Привычка"
+        verbose_name_plural = "Привычки"
