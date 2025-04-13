@@ -56,7 +56,7 @@ class Habit(models.Model):
         help_text="Укажите связанную привычку",
         null=True,
     )
-    periodic = models.IntegerField(
+    periodic = models.PositiveIntegerField(
         default=1,
         verbose_name="Периодичность",
         help_text="Укажите, сколько раз в неделю будет выполняться привычка",
@@ -83,7 +83,7 @@ class Habit(models.Model):
     )
 
     def __str___(self):
-        return f"Я буду {self.acrion} в {self.time} в {self.place}."
+        return f"Я буду {self.action} в {self.time} в {self.place}."
 
     class Meta:
         verbose_name = "Привычка"

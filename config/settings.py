@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     "users",
     "django_filters",
     "rest_framework_simplejwt",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -37,6 +38,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -122,3 +124,32 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
+
+TELEGRAM_URL = 'https://api.telegram.org/bot'
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+
+CACHE_ENABLED = True
+if CACHE_ENABLED:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": os.getenv("LOCATION"),
+        }
+    }
+
+CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")
+CELERY_CACHE_BACKEND = os.getenv("CELERY_CACHE_BACKEND")
+
+
+CELERY_BEAT_SCHEDULE = {
+    "sendmail_course_updated": {
+        "task": "users.tasks.send_telegram_notification",
+        "schedule": timedelta(minutes=1),
+    },
+}
+
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+
+# CORS_ALLOWED_ORIGINS = ["https://example.com", "http://localhost:3000"]

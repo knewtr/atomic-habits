@@ -12,6 +12,7 @@ from habits.models import Habit
 from habits.serializers import HabitSerializer
 from users.permissions import IsOwner, ReadOnly
 from habits.pagination import CustomPagination
+from users.tasks import send_telegram_notification
 
 
 class HabitCreateAPIView(CreateAPIView):
