@@ -67,6 +67,8 @@ class Habit(models.Model):
         max_length=250,
         verbose_name="Награда",
         help_text="Укажите награду за выполнение",
+        blank=True,
+        null=True,
     )
     duration = models.DurationField(
         default=timedelta(seconds=120),

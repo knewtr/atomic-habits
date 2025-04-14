@@ -1,17 +1,13 @@
 from django.shortcuts import render
+from rest_framework.generics import (CreateAPIView, DestroyAPIView,
+                                     ListAPIView, RetrieveAPIView,
+                                     UpdateAPIView)
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.generics import (
-    CreateAPIView,
-    DestroyAPIView,
-    ListAPIView,
-    RetrieveAPIView,
-    UpdateAPIView,
-)
 
 from habits.models import Habit
+from habits.pagination import CustomPagination
 from habits.serializers import HabitSerializer
 from users.permissions import IsOwner, ReadOnly
-from habits.pagination import CustomPagination
 from users.tasks import send_telegram_notification
 
 
@@ -29,7 +25,10 @@ class HabitCreateAPIView(CreateAPIView):
 class HabitRetrieveAPIView(RetrieveAPIView):
     queryset = Habit.objects.all()
     serializer_class = HabitSerializer
-    permission_classes = (IsAuthenticated, IsOwner,)
+    permission_classes = (
+        IsAuthenticated,
+        IsOwner,
+    )
 
 
 class HabitListAPIView(ListAPIView):
@@ -45,7 +44,11 @@ class HabitListAPIView(ListAPIView):
 class HabitUpdateAPIView(UpdateAPIView):
     queryset = Habit.objects.all()
     serializer_class = HabitSerializer
-    permission_classes = IsOwner
+    permission_classes = [IsAuthenticated, IsOwner]
+
+    def perform_update(self, serializer):
+        habit = serializer.save()
+        send_telegram_notification.delay(habit.owner.id)
 
 
 class HabitDestroyAPIView(DestroyAPIView):

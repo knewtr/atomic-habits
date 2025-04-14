@@ -1,13 +1,17 @@
 from celery import shared_task
-from users.services import send_telegram_message
 
 from habits.models import Habit
+from users.models import User
+from users.services import send_telegram_message
+
 
 @shared_task
-def send_telegram_notification(owner):
+def send_telegram_notification(user_id):
     """Отправляет уведомление в телеграм"""
     user = User.objects.get(id=user_id)
-    habit = Habit.objects.filter(owner=user)
+    habits = Habit.objects.filter(owner=user)
     for habit in habits:
-        message = f"Привет! Напоминаю, что в {habit.time} тебе необходимо {habit.action}"
+        message = (
+            f"Привет! Напоминаю, что в {habit.time} тебе необходимо {habit.action}"
+        )
         send_telegram_message(user.tg_chat_id, message)

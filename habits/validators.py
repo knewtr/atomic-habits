@@ -1,14 +1,15 @@
 from rest_framework.serializers import ValidationError
 
+
 class RewardValidator:
     def __init__(self, related_habit):
         self.related_habit = related_habit
 
-    def __call__(self, related_habit):
+    def __call__(self, value):
         related_habit_ = value.get(self.related_habit)
 
-        if related_habit:
-            if not related_habit.is_pleasant:
+        if related_habit_:
+            if not related_habit_.is_pleasant:
                 raise ValidationError("Связанная привычка должна быть приятной")
 
 
@@ -18,7 +19,7 @@ class DurationValidator:
 
     def __call__(self, value):
         duration_ = value.get(self.duration)
-        if duration_ > 120:
+        if duration_ and duration_.total_seconds() > 120:
             raise ValidationError("Время выполнения не может превышать 120 секунд.")
 
 
@@ -35,7 +36,9 @@ class PleasantHabitValidator:
 
         if is_pleasant_:
             if related_habit_ or reward_:
-                raise ValidationError("У приятной привычки не может быть награды или связанной привычки.")
+                raise ValidationError(
+                    "У приятной привычки не может быть награды или связанной привычки."
+                )
 
 
 class PeriodicValidator:
@@ -45,4 +48,6 @@ class PeriodicValidator:
     def __call__(self, value):
         periodic_ = value.get(self.periodic)
         if not 1 < periodic_ <= 7:
-            raise ValidationError("Нельзя выполнять привычку реже, чем 1 раз в неделю, или чаще 7 раз в неделю.")
+            raise ValidationError(
+                "Нельзя выполнять привычку реже, чем 1 раз в неделю, или чаще 7 раз в неделю."
+            )

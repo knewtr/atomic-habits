@@ -50,7 +50,7 @@ class User(AbstractUser):
         blank=True,
         null=True,
         verbose_name="Телеграм chat-id",
-        help_text="Укажите телеграм chat-id"
+        help_text="Укажите телеграм chat-id",
     )
 
     USERNAME_FIELD = "email"
