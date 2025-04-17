@@ -47,7 +47,7 @@ class PeriodicValidator:
 
     def __call__(self, value):
         periodic_ = value.get(self.periodic)
-        if not 1 < periodic_ <= 7:
+        if periodic_ is not None and not 1 < periodic_ <= 7:
             raise ValidationError(
                 "Нельзя выполнять привычку реже, чем 1 раз в неделю, или чаще 7 раз в неделю."
             )
