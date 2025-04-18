@@ -7,6 +7,7 @@ from rest_framework.test import APITestCase
 from habits.models import Habit
 from users.models import User
 
+
 class HabitTestCase(APITestCase):
 
     def setUp(self):
@@ -15,12 +16,14 @@ class HabitTestCase(APITestCase):
             name="шаги",
             owner=self.user,
             place="улица",
-            time="19:00",
+            time="19:00:00",
             action="пройти 2000 шагов",
             is_pleasant=False,
             periodic=2,
             reward="съесть сырок Б.Ю.Александров",
-            is_public=True
+            duration="00:02:00",
+            related_habit=None,
+            is_public=True,
         )
         self.client.force_authenticate(user=self.user)
 
@@ -63,3 +66,30 @@ class HabitTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Habit.objects.all().count(), 0)
 
+    def test_habit_list(self):
+        url = reverse("habits:habits_list")
+        response = self.client.get(url)
+        data = response.json()
+        result = {
+            "count": 1,
+            "next": None,
+            "previous": None,
+            "results": [
+                {
+                    "id": self.habit.pk,
+                    "name": self.habit.name,
+                    "owner": self.user.pk,
+                    "place": self.habit.place,
+                    "time": self.habit.time,
+                    "action": self.habit.action,
+                    "is_pleasant": self.habit.is_pleasant,
+                    "related_habit": self.habit.related_habit,
+                    "periodic": self.habit.periodic,
+                    "reward": self.habit.reward,
+                    "duration": self.habit.duration,
+                    "is_public": self.habit.is_public,
+                },
+            ],
+        }
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(data, result)

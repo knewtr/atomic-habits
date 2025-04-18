@@ -21,22 +21,22 @@ class UserCreateAPIView(CreateAPIView):
 class UserRetrieveAPIView(RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = IsAuthenticated
+    permission_classes = [AllowAny]
 
 
 class UserListAPIView(ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = IsAuthenticated
+    permission_classes = [IsAuthenticated]
 
 
 class UserUpdateAPIView(UpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = IsAuthenticated
+    permission_classes = [IsAuthenticated]
 
 
 class UserDestroyAPIView(DestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = IsAuthenticated
+    permission_classes = [IsAuthenticated]
