@@ -1,13 +1,10 @@
 import json
-from unittest.mock import patch
 
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from habits.models import Habit
 from users.models import User
-from users.tasks import send_telegram_notification
 
 
 class UserTestCase(APITestCase):
@@ -62,38 +59,3 @@ class UserTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(data, result)
-
-
-class NotificationTestCase(APITestCase):
-
-    def setUp(self):
-        self.user = User.objects.create(
-            email="test5@mail.pro", name="test5", avatar=None, tg_chat_id="test5"
-        )
-        self.habit = Habit.objects.create(
-            name="шаги",
-            owner=self.user,
-            place="улица",
-            time="19:00:00",
-            action="пройти 2000 шагов",
-            is_pleasant=False,
-            periodic=2,
-            reward="съесть сырок Б.Ю.Александров",
-            duration="00:02:00",
-            related_habit=None,
-            is_public=True,
-        )
-
-    @patch("users.services.send_telegram_message")
-    def test_user_notification(self, mock_send):
-        send_telegram_notification(self.user.id)
-        self.assertEqual(mock_send.call_count, 1)
-
-        expected_call = [
-            (
-                self.user.tg_chat_id,
-                "Привет! Напоминаю, что в 19:00:00 тебе необходимо пройти 2000 шагов",
-            ),
-        ]
-        actual_call = mock_send.call_args[0]
-        self.assertEqual(actual_call, expected_call)

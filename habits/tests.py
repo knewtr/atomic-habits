@@ -52,14 +52,6 @@ class HabitTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Habit.objects.all().count(), 2)
 
-    # def test_habit_update(self):
-    #     url = reverse("habits:habit_update", args=(self.habit.pk,))
-    #     data = {"reward": "выпить кружку вкусного чая"}
-    #     response = self.client.patch(url, data)
-    #     data = response.json()
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(data.get("reward"), "выпить кружку вкусного чая")
-
     def test_habit_delete(self):
         url = reverse("habits:habit_destroy", args=(self.habit.pk,))
         response = self.client.delete(url)

@@ -1,7 +1,22 @@
 from rest_framework.serializers import ValidationError
 
 
-class RewardValidator:
+class ExclusiveHabitValidator:
+    def __init__(self, related_habit, reward):
+        self.related_habit = related_habit
+        self.reward = reward
+
+    def __call__(self, value):
+        related_habit_ = value.get(self.related_habit)
+        reward_ = value.get(self.reward)
+
+        if related_habit_ and reward_:
+            raise ValidationError(
+                "У привычки не может одновременно быть и поле вознаграждения, и поле связанной привычки."
+            )
+
+
+class RelatedHabitValidator:
     def __init__(self, related_habit):
         self.related_habit = related_habit
 
@@ -10,7 +25,7 @@ class RewardValidator:
 
         if related_habit_:
             if not related_habit_.is_pleasant:
-                raise ValidationError("Связанная привычка должна быть приятной")
+                raise ValidationError("Связанная привычка должна быть приятной.")
 
 
 class DurationValidator:
