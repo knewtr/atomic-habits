@@ -1,1 +1,1 @@
-# Atomic Habits project
+# Проект платформы для создания и отслеживания атомных привычек (на основе книги Atomic Habits by James Clear) 
