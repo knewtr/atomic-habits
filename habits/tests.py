@@ -1,4 +1,5 @@
 import json
+from datetime import timedelta
 
 from django.urls import reverse
 from rest_framework import status
@@ -21,7 +22,7 @@ class HabitTestCase(APITestCase):
             is_pleasant=False,
             periodic=2,
             reward="съесть сырок Б.Ю.Александров",
-            duration="00:02:00",
+            duration=timedelta(days=2),
             related_habit=None,
             is_public=True,
         )
@@ -41,10 +42,10 @@ class HabitTestCase(APITestCase):
             "place": "кухня",
             "time": "06:00",
             "action": "выпить 1 капсулу омега-3",
-            "is_pleasant": "False",
-            "periodic": "5",
+            "is_pleasant": False,
+            "periodic": 5,
             "reward": "выпить чашку кофе",
-            "is_public": "True",
+            "is_public": True,
         }
         response = self.client.post(
             url, json.dumps(data), content_type="application/json"
@@ -78,7 +79,7 @@ class HabitTestCase(APITestCase):
                     "related_habit": self.habit.related_habit,
                     "periodic": self.habit.periodic,
                     "reward": self.habit.reward,
-                    "duration": self.habit.duration,
+                    "duration": "2 00:00:00",
                     "is_public": self.habit.is_public,
                 },
             ],
